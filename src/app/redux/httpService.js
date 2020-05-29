@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default class HttpService {
-    BASE_URL = 'http://localhost:3000';
+    BASE_URL = 'http://localhost:3001';
     _accessToken = null;
 
     async get(endpoint, options = {}) {

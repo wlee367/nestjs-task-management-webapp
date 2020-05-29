@@ -6,28 +6,19 @@ import { Tasks } from './app/containers/Tasks/Tasks';
 import LandingPage from './app/containers/LandingPage/LandingPage';
 import { TasksDetails } from './app/containers/Tasks/TaskDetails';
 
+const NotFoundPage = () => {
+    return <div>40404040404</div>;
+};
+
 const App = () => (
     <BrowserRouter>
         <Switch>
-            <Route path={'/'} exact={true} render={() => <LandingPage />} />
-            <Route path={'/board'} exact={true} render={() => <Tasks />} />
-            <Route
-                path={'/board/:id'}
-                exact={true}
-                render={() => <TasksDetails />}
-            />
-            <Route path={'/login'} exact={true} render={() => <Login />} />
-            <Route
-                path={'/register'}
-                exact={true}
-                render={() => <Register />}
-            />
-            <Route
-                path=""
-                render={() => {
-                    return <div>404</div>;
-                }}
-            />
+            <Route path={'/'} exact={true} component={LandingPage} />
+            <Route path={'/board'} exact={true} component={Tasks} />
+            <Route path={'/board/:id'} exact={true} component={TasksDetails} />
+            <Route path={'/login'} exact={true} component={Login} />
+            <Route path={'/register'} exact={true} component={Register} />
+            <Route path="" component={NotFoundPage} />
         </Switch>
     </BrowserRouter>
 );

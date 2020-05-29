@@ -16,6 +16,11 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Layout } from '../Layout/Layout';
+import { useDispatch } from 'react-redux';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { loginUser } from '../../redux/actions/users';
+import { StoreState } from '../../redux/reducers';
 
 export const useStyles = makeStyles((theme: Theme) => ({
     container: {},
@@ -57,13 +62,23 @@ export function Copyright() {
 
 export const Login = (props: any) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const typedUseSelector: TypedUseSelectorHook<StoreState> = useSelector;
+
+    const user = typedUseSelector((state) => state.user);
+
+    console.log(user);
+
+    if (user && user.authenticated) {
+        history.push('/board');
+    }
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [helperText, setHelperText] = useState('');
     const [error, setError] = useState(false);
-
-    console.log(props);
 
     useEffect(() => {
         if (username.trim() && password.trim()) {
@@ -74,13 +89,18 @@ export const Login = (props: any) => {
     }, [username, password]);
 
     const handleLogin = () => {
-        if (username === 'abc@email.com' && password === 'password') {
-            setError(false);
-            setHelperText('Login Successfully');
-        } else {
-            setError(true);
-            setHelperText('Incorrect username or password');
-        }
+        const userData = {
+            username,
+            password,
+        };
+        dispatch(loginUser(userData, null));
+        // if (username === 'abc@email.com' && password === 'password') {
+        //     setError(false);
+        //     setHelperText('Login Successfully');
+        // } else {
+        //     setError(true);
+        //     setHelperText('Incorrect username or password');
+        // }
     };
 
     const handleKeyPress = (e: any) => {

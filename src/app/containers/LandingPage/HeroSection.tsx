@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Hero from '../../../assets/hero.jpg';
+import Hero from '../../assets/hero.jpg';
 import { Button } from '@material-ui/core';
 
 interface SectionProps {

@@ -20,6 +20,8 @@ import Menu, { MenuProps } from '@material-ui/core/Menu';
 import Link from '@material-ui/core/Link';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Button } from '@material-ui/core';
+import { StoreState } from '../../../redux/reducers';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -89,7 +91,10 @@ export default function MenuAppBar() {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
-    const [auth, setAuth] = React.useState(false);
+    const typedUseSelector: TypedUseSelectorHook<StoreState> = useSelector;
+    const user = typedUseSelector((state) => state.user);
+
+    const [auth, setAuth] = React.useState(user && user.authenticated);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
