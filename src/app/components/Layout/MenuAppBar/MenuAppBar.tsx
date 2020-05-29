@@ -39,10 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         shiftedTitle: {
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             alignItems: 'center',
             width: '100%',
-            marginLeft: '10%',
         },
         toolBar: {
             minHeight: 48,

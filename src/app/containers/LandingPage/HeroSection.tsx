@@ -50,7 +50,7 @@ export const HeroSection = () => {
                 <HeroSubMessage>
                     Keep track of all your tasks in one simple place
                 </HeroSubMessage>
-                <CTAButton variant="contained" color="primary">
+                <CTAButton href="/register" variant="contained" color="primary">
                     Register Now
                 </CTAButton>
             </HeroTextContainer>
