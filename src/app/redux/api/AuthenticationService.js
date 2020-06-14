@@ -1,19 +1,40 @@
 import HttpService from '../httpService';
 import { post } from 'axios';
+import qs from 'querystring'
+
+const config = {
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+}
 
 class AuthenticationService extends HttpService {
     async signin(username, password) {
-        const result = await post(`${this.BASE_URL}/auth/signin`, {
+        return post(`${this.BASE_URL}/auth/signin`, qs.stringify({
             username,
             password,
-        });
-        const accessToken = result.data.accessToken;
-        this.saveToken(accessToken);
-        return result.data.username;
+        }), config).then((response)=> {
+            const accessToken = response.data.accessToken;
+            this.saveToken(accessToken);
+    
+            console.log(response)
+            if(response.status === 201) {
+                return {
+                    isAuthError: false,
+                    errorObject: {}
+                }
+            }
+        }).catch(err => {
+            console.log(err.response)
+            return {
+                isAuthError: true,
+                errorObject: err.response
+            }
+        })
     }
 
     async signup(username, password) {
-        await post(`${this.BASE_URL}/auth/signup`, { username, password });
+        await post(`${this.BASE_URL}/auth/signup`, qs.stringify({ username, password }), config);
     }
 
     async signout() {

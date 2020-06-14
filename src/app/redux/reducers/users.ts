@@ -3,6 +3,7 @@ import {
     SET_AUTHENTICATED,
     SET_UNAUTHENTICATED,
     LOADING_USER,
+    AUTHENTICATION_FAILED,
 } from '../actions/types';
 
 export interface User {
@@ -13,8 +14,9 @@ export interface User {
 
 const initialState = {
     authenticated: false,
-    credentials: {},
+    user: {},
     loading: false,
+    authError: null
 };
 
 export default function (state = initialState, action: any) {
@@ -22,10 +24,18 @@ export default function (state = initialState, action: any) {
         case SET_AUTHENTICATED:
             return {
                 ...state,
+                user: {userName: action.payload.userName},
                 authenticated: true,
+                authError: null
             };
         case SET_UNAUTHENTICATED:
             return initialState;
+        case AUTHENTICATION_FAILED:
+            return {
+                ...state,
+                authenticated: false,
+                authError: action.payload.error
+            }
         case SET_USER:
             return {
                 authenticated: true,

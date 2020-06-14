@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@types/react-beautiful-dnd": "^12.1.2",
+    "querystring": "^0.2.0",
     "react-beautiful-dnd": "^13.0.0",
     "redux-devtools-extension": "^2.13.8"
   }

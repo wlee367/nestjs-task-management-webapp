@@ -27,6 +27,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     signup: {
         display: 'flex',
         justifyContent: 'flex-end',
+        padding: '0.5em'
     },
     paper: {
         marginTop: theme.spacing(8),
@@ -68,7 +69,7 @@ export const Login = (props: any) => {
 
     const user = typedUseSelector((state) => state.user);
 
-    console.log(user);
+    const error = user && user.authError;
 
     if (user && user.authenticated) {
         history.push('/board');
@@ -78,7 +79,6 @@ export const Login = (props: any) => {
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [helperText, setHelperText] = useState('');
-    const [error, setError] = useState(false);
 
     useEffect(() => {
         if (username.trim() && password.trim()) {
@@ -94,13 +94,6 @@ export const Login = (props: any) => {
             password,
         };
         dispatch(loginUser(userData, null));
-        // if (username === 'abc@email.com' && password === 'password') {
-        //     setError(false);
-        //     setHelperText('Login Successfully');
-        // } else {
-        //     setError(true);
-        //     setHelperText('Incorrect username or password');
-        // }
     };
 
     const handleKeyPress = (e: any) => {
@@ -108,6 +101,16 @@ export const Login = (props: any) => {
             isButtonDisabled || handleLogin();
         }
     };
+
+    const displayErrorMessage = () => {
+        if(error && error.data.statusCode === 400){
+            return (
+                <p style={{
+                    color: 'red'
+                }}>The given credentials were incorrect.</p>
+            )
+        }
+    }
 
     return (
         <Layout>
@@ -131,9 +134,12 @@ export const Login = (props: any) => {
                     >
                         <Card>
                             <CardContent>
+                                {
+                                    displayErrorMessage()
+                                }
                                 <div>
                                     <TextField
-                                        error={error}
+                                        error={error !== null}
                                         fullWidth
                                         id="username"
                                         type="email"
@@ -146,7 +152,7 @@ export const Login = (props: any) => {
                                         onKeyPress={(e) => handleKeyPress(e)}
                                     />
                                     <TextField
-                                        error={error}
+                                        error={error !== null}
                                         fullWidth
                                         id="password"
                                         type="password"

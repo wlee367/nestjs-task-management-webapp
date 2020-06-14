@@ -16,9 +16,11 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Layout } from '../Layout/Layout';
-
+import { signUpUser } from '../../redux/actions/users';
+import {useDispatch } from 'react-redux'
 export const Register = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -33,19 +35,18 @@ export const Register = () => {
         }
     }, [username, password]);
 
-    const handleLogin = () => {
-        if (username === 'abc@email.com' && password === 'password') {
-            setError(false);
-            setHelperText('Login Successfully');
-        } else {
-            setError(true);
-            setHelperText('Incorrect username or password');
-        }
+    const handleRegister = () => {
+        const userData = {
+            username,
+            password,
+        };
+
+        dispatch(signUpUser(userData))
     };
 
     const handleKeyPress = (e: any) => {
         if (e.keyCode === 13 || e.which === 13) {
-            isButtonDisabled || handleLogin();
+            isButtonDisabled || handleRegister();
         }
     };
 
@@ -105,7 +106,7 @@ export const Register = () => {
                                 <Button
                                     variant="contained"
                                     size="large"
-                                    onClick={() => handleLogin()}
+                                    onClick={() => handleRegister()}
                                     className={classes.submit}
                                     color="primary"
                                     fullWidth

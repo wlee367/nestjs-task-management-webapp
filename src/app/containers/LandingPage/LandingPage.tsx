@@ -4,6 +4,7 @@ import { HeroSection } from './HeroSection';
 import { LandingPageLayout } from './LandingPageLayout';
 import { FeaturesSection } from './FeaturesSection';
 import { CTASection } from './CTASection';
+import { Redirect } from 'react-router-dom';
 
 export const styles = (theme: Theme) => ({
     root: {
@@ -15,15 +16,16 @@ export const styles = (theme: Theme) => ({
 });
 
 const LandingPage = () => {
-    return (
-        <>
-            <LandingPageLayout>
-                <HeroSection />
-                <FeaturesSection />
-                <CTASection />
-            </LandingPageLayout>
-        </>
-    );
+    return <Redirect to={'/login'}/>
+    // return (
+        // <>
+        //     <LandingPageLayout>
+        //         <HeroSection />
+        //         <FeaturesSection />
+        //         <CTASection />
+        //     </LandingPageLayout>
+        // </>
+    // );
 };
 
 export default withStyles(styles)(LandingPage);
