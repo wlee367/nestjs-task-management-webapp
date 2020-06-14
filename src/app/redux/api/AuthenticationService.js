@@ -16,8 +16,6 @@ class AuthenticationService extends HttpService {
         }), config).then((response)=> {
             const accessToken = response.data.accessToken;
             this.saveToken(accessToken);
-    
-            console.log(response)
             if(response.status === 201) {
                 return {
                     isAuthError: false,
@@ -34,7 +32,19 @@ class AuthenticationService extends HttpService {
     }
 
     async signup(username, password) {
-        await post(`${this.BASE_URL}/auth/signup`, qs.stringify({ username, password }), config);
+        return post(`${this.BASE_URL}/auth/signup`, qs.stringify({ username, password }), config).then((response) => {
+            if(response.status === 201) {
+                return {
+                    didRegisterError: false,
+                    errorObject: {}
+                }
+            }
+        }).catch(err => {
+            return {
+                didRegisterError: true,
+                errorObject: err.response
+            }
+        });
     }
 
     async signout() {

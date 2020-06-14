@@ -14,12 +14,23 @@ let AuthService = new AuthenticationService();
 export const signUpUser = (userData: any) => (dispatch: any) =>{
     dispatch({type: LOADING_UI})
 
-    AuthService.signup(userData.username, userData.password)
-    dispatch({
-        type: SET_AUTHENTICATED,
-        payload: {
-            authenticated: false,
-            userName: userData.username 
+    AuthService.signup(userData.username, userData.password).then((response)=> {
+        if(response.didRegisterError === true) {
+            dispatch({
+                type: AUTHENTICATION_FAILED,
+                payload: {
+                    authenticated: false,
+                    error: response.errorObject
+                }
+            })
+        } else {
+            dispatch({
+                type: SET_AUTHENTICATED,
+                payload: {
+                    authenticated: true,
+                    userName: userData.username
+                }
+            })
         }
     })
 }
@@ -43,8 +54,7 @@ export const loginUser = (userData: any, history: any) => (dispatch: any) => {
                 }
             })
         }
-    })
-    ;
+    });
 };
 //for fetching authenticated user information
 export const getUserData = () => (dispatch: any) => {

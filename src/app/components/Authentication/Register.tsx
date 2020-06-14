@@ -8,6 +8,8 @@ import {
     Avatar,
     Box,
 } from '@material-ui/core';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
+
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
@@ -17,15 +19,22 @@ import Link from '@material-ui/core/Link';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Layout } from '../Layout/Layout';
 import { signUpUser } from '../../redux/actions/users';
-import {useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { StoreState } from '../../redux/reducers';
+
 export const Register = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const typedUseSelector: TypedUseSelectorHook<StoreState> = useSelector;
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [helperText, setHelperText] = useState('');
-    const [error, setError] = useState(false);
+
+    const user = typedUseSelector((state) => state.user);
+
+    const error = user && user.authError;
 
     useEffect(() => {
         if (username.trim() && password.trim()) {
@@ -50,6 +59,18 @@ export const Register = () => {
         }
     };
 
+    const displayErrorMessage = () => {
+        if(error && error.data.statusCode === 400){
+            return (
+                <p style={{
+                    color: 'red'
+                }}>
+                 Please choose a stronger password. Passwords must be at least 8 characters long, and contain at least one capital letter and at least one special character.
+                </p>
+            )
+        }
+    }
+
     return (
         <Layout>
             <Container
@@ -72,9 +93,12 @@ export const Register = () => {
                     >
                         <Card>
                             <CardContent>
+                                {
+                                    displayErrorMessage()
+                                }
                                 <div>
                                     <TextField
-                                        error={error}
+                                        error={error !== null}
                                         fullWidth
                                         id="username"
                                         type="email"
@@ -87,7 +111,7 @@ export const Register = () => {
                                         onKeyPress={(e) => handleKeyPress(e)}
                                     />
                                     <TextField
-                                        error={error}
+                                        error={error !== null}
                                         fullWidth
                                         id="password"
                                         type="password"
