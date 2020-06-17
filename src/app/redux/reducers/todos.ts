@@ -1,4 +1,4 @@
-import { Action } from '../actions';
+import { Action, ActionTypes } from '../actions';
 
 const initialState = {
         items: [ {
@@ -67,6 +67,11 @@ const initialState = {
 
 export const todosReducer = (state = initialState, action: Action) => {
     switch (action.type) {
+        case ActionTypes.moveTodos:
+            return {
+                items: action.todos,
+                columns: action.columns
+            }
         default:
             return state;
     }

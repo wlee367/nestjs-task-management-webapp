@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { TaskManagementBoard } from '../../components/TaskManagement/TaskManagementBoard';
+import  TaskManagementBoard from '../../components/TaskManagement/TaskManagementBoard';
 import { createGlobalStyle } from 'styled-components';
 import { Layout } from '../../components/Layout/Layout';
 

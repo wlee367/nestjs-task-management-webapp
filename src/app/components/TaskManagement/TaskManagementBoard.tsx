@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import { TaskManagementBoardColumn } from './TaskManagementBoardColumn';
 import { TaskDetailModal } from '../TaskDetailModal/TaskDetailModal';
 import { ActivityDrawer } from '../ActivityDrawer/ActivityDrawer';
+import { moveTodo } from '../../redux/actions';
+import { connect, ConnectedProps } from 'react-redux'
+import { StoreState } from '../../redux/reducers';
 
 // Create styles board element properties
 const BoardEl = styled.div`
@@ -21,19 +24,33 @@ const BoardTitleBar = styled.div`
     padding-bottom: 1em;
 `;
 
-type TaskManagementBoardProps = {
-    detailId?: string;
-    todos? : object;
-    columns? : object;
-    columnsOrder? : [];
-};
 
 type TaskManagementBoardState = {
     doesDetailIdExist: boolean;
     detailId?: string;
 };
 
-export class TaskManagementBoard extends React.Component<
+const mapState = (state: StoreState) => ({
+    todos: state.todos.items,
+    columns: state.todos.columns,
+    columnsOrder: state.todos.columnsOrder
+})
+
+const mapDispatch = {
+    moveTodo: (todos: any, columns: any) => moveTodo(todos, columns)
+}
+
+const connector = connect(mapState, mapDispatch)
+
+type TaskManagementBoardProps = ConnectedProps<typeof connector> & {
+    detailId?: string;
+    todos? : object;
+    columns? : object;
+    columnsOrder? : [];
+};
+
+
+class TaskManagementBoard extends React.Component<
     TaskManagementBoardProps,
     any
 > {
@@ -51,8 +68,8 @@ export class TaskManagementBoard extends React.Component<
 
     componentDidMount() {
         if (this.props.detailId) {
-            const itemToShow = Object.values(this.state.items).filter(
-                (item) => {
+            const itemToShow: any = Object.values(this.state.items).filter(
+                (item: any) => {
                     return item.id === this.props.detailId;
                 }
             );
@@ -87,7 +104,6 @@ export class TaskManagementBoard extends React.Component<
 
         // Find column from which the item was dragged from
         const columnStart = (this.state.columns as any)[source.droppableId];
-        console.log(columnStart)
 
         // Find column in which the item was dropped
         const columnFinish = (this.state.columns as any)[
@@ -161,7 +177,9 @@ export class TaskManagementBoard extends React.Component<
             };
 
             // Update the board state with new data
-            this.setState(newState);
+            this.setState(newState, () => {
+                this.props.moveTodo(newState.items, newState.columns);
+            });
         }
     };
 
@@ -187,7 +205,7 @@ export class TaskManagementBoard extends React.Component<
                     {/* Create context for drag & drop */}
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         {/* Get all columns in the order specified in 'board-initial-data.ts' */}
-                        {this.state.columnsOrder.map((columnId) => {
+                        {this.state.columnsOrder.map((columnId: string) => {
                             // Get id of the current column
                             const column = (this.state.columns as any)[
                                 columnId
@@ -196,7 +214,7 @@ export class TaskManagementBoard extends React.Component<
                             // Get item belonging to the current column
                             const items = column && column.itemIds.map(
                                 (itemId: string) => {
-                                    return Object.values(this.state.items).filter(item => {
+                                    return Object.values(this.state.items).filter((item:any) => {
                                        return item.id === itemId
                                     })[0]
                                 }
@@ -217,3 +235,5 @@ export class TaskManagementBoard extends React.Component<
         );
     }
 }
+
+export default connector(TaskManagementBoard);

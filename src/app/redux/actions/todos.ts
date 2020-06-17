@@ -18,7 +18,21 @@ export interface DeleteTodoAction {
     payload: number;
 }
 
+export interface MoveTodoAction {
+    type: ActionTypes.moveTodos;
+    todos: object,
+    columns: object
+}
+
 const url = 'http://jsonplaceholder.typicode.com/todos';
+
+export const moveTodo = (todos: object, columns: object): MoveTodoAction => {
+    return {
+        type: ActionTypes.moveTodos,
+        todos: todos,
+        columns: columns
+    }
+}
 
 export const fetchTodos = () => {
     return async (dispatch: Dispatch) => {

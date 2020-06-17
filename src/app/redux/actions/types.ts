@@ -1,11 +1,12 @@
-import { FetchTodosAction, DeleteTodoAction } from './todos';
+import { FetchTodosAction, DeleteTodoAction, MoveTodoAction } from './todos';
 
 export enum ActionTypes {
     fetchTodos,
     deleteTodo,
+    moveTodos
 }
 
-export type Action = FetchTodosAction | DeleteTodoAction;
+export type Action = FetchTodosAction | DeleteTodoAction | MoveTodoAction;
 
 //user reducer types
 export const SET_AUTHENTICATED = 'SET_AUTHENTICATED';
