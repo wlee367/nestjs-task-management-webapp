@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { initialBoardData } from './data/initialData';
 import styled from 'styled-components';
 
 import { TaskManagementBoardColumn } from './TaskManagementBoardColumn';
@@ -24,10 +23,12 @@ const BoardTitleBar = styled.div`
 
 type TaskManagementBoardProps = {
     detailId?: string;
+    todos? : object;
+    columns? : object;
+    columnsOrder? : [];
 };
 
 type TaskManagementBoardState = {
-    initialBoardData: object;
     doesDetailIdExist: boolean;
     detailId?: string;
 };
@@ -38,17 +39,18 @@ export class TaskManagementBoard extends React.Component<
 > {
     // Initialize board state with board data
     state = {
-        ...initialBoardData,
+        items: this.props.todos ? this.props.todos : [],
+        columns: this.props.columns ? this.props.columns : [],
+        columnsOrder: this.props.columnsOrder ? this.props.columnsOrder : [],
         isOpen: false,
         title: '',
         content: '',
         id: '',
     };
 
+
     componentDidMount() {
         if (this.props.detailId) {
-            console.log(this.state.columnsOrder);
-
             const itemToShow = Object.values(this.state.items).filter(
                 (item) => {
                     return item.id === this.props.detailId;
@@ -189,9 +191,12 @@ export class TaskManagementBoard extends React.Component<
                             ];
 
                             // Get item belonging to the current column
-                            const items = column.itemsIds.map(
-                                (itemId: string) =>
-                                    (this.state.items as any)[itemId]
+                            const items = column && column.itemIds.map(
+                                (itemId: string) => {
+                                    return Object.values(this.state.items).filter(item => {
+                                       return item.id === itemId
+                                    })[0]
+                                }
                             );
 
                             // Render the BoardColumn component

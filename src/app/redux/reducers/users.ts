@@ -12,7 +12,7 @@ export interface User {
     loading: boolean;
 }
 
-const initialState = {
+const initialState: any = {
     authenticated: false,
     user: {},
     loading: false,

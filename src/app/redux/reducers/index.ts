@@ -1,14 +1,13 @@
 import { combineReducers } from 'redux';
 import { todosReducer } from './todos';
 import userReducer from './users';
-import { Todo } from '../actions';
 
 export interface StoreState {
-    todos: Todo[];
+    todos: any;
     user: any;
 }
 
-export const reducers = combineReducers<StoreState>({
+export const reducers = combineReducers<StoreState|any>({
     todos: todosReducer,
     user: userReducer,
 });

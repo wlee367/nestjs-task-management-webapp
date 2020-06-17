@@ -103,7 +103,7 @@ export const Login = (props: any) => {
     };
 
     const displayErrorMessage = () => {
-        if(error && error.data.statusCode === 400){
+        if(error && error.data.statusCode >= 400){
             return (
                 <p style={{
                     color: 'red'

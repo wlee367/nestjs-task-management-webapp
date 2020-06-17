@@ -1,9 +1,5 @@
 import React from 'react';
 import { withStyles, Theme } from '@material-ui/core/styles';
-import { HeroSection } from './HeroSection';
-import { LandingPageLayout } from './LandingPageLayout';
-import { FeaturesSection } from './FeaturesSection';
-import { CTASection } from './CTASection';
 import { Redirect } from 'react-router-dom';
 
 export const styles = (theme: Theme) => ({
