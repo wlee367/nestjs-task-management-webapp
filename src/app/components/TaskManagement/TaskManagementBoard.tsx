@@ -87,6 +87,7 @@ export class TaskManagementBoard extends React.Component<
 
         // Find column from which the item was dragged from
         const columnStart = (this.state.columns as any)[source.droppableId];
+        console.log(columnStart)
 
         // Find column in which the item was dropped
         const columnFinish = (this.state.columns as any)[
@@ -96,7 +97,7 @@ export class TaskManagementBoard extends React.Component<
         // Moving items in the same list
         if (columnStart === columnFinish) {
             // Get all item ids in currently active list
-            const newItemsIds = Array.from(columnStart.itemsIds);
+            const newItemsIds = Array.from(columnStart.itemIds);
 
             // Remove the id of dragged item from its original position
             newItemsIds.splice(source.index, 1);
@@ -107,7 +108,7 @@ export class TaskManagementBoard extends React.Component<
             // Create new, updated, object with data for columns
             const newColumnStart = {
                 ...columnStart,
-                itemsIds: newItemsIds,
+                itemIds: newItemsIds,
             };
 
             // Create new board state with updated data for columns
@@ -119,12 +120,14 @@ export class TaskManagementBoard extends React.Component<
                 },
             };
 
+            console.log(newState)
+
             // Update the board state with new data
             this.setState(newState);
         } else {
             // Moving items from one list to another
             // Get all item ids in source list
-            const newStartItemsIds = Array.from(columnStart.itemsIds);
+            const newStartItemsIds = Array.from(columnStart.itemIds);
 
             // Remove the id of dragged item from its original position
             newStartItemsIds.splice(source.index, 1);
@@ -132,11 +135,11 @@ export class TaskManagementBoard extends React.Component<
             // Create new, updated, object with data for source column
             const newColumnStart = {
                 ...columnStart,
-                itemsIds: newStartItemsIds,
+                itemIds: newStartItemsIds,
             };
 
             // Get all item ids in destination list
-            const newFinishItemsIds = Array.from(columnFinish.itemsIds);
+            const newFinishItemsIds = Array.from(columnFinish.itemIds);
 
             // Insert the id of dragged item to the new position in destination list
             newFinishItemsIds.splice(destination.index, 0, draggableId);
@@ -144,7 +147,7 @@ export class TaskManagementBoard extends React.Component<
             // Create new, updated, object with data for destination column
             const newColumnFinish = {
                 ...columnFinish,
-                itemsIds: newFinishItemsIds,
+                itemIds: newFinishItemsIds,
             };
 
             // Create new board state with updated data for both, source and destination columns
