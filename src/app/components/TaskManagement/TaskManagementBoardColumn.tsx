@@ -3,6 +3,8 @@ import { Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { TaskManagementBoardItem } from './TaskManagementBoardItem';
 import { NewCardModal } from '../NewCardModal/NewCardModal';
+import { useDispatch } from 'react-redux';
+import { createTodo } from '../../redux/actions';
 
 // Define types for board column element properties
 type BoardColumnProps = {
@@ -66,10 +68,15 @@ export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (
     props
 ) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const dispatch = useDispatch();
 
     const handleSubmitForm = (title: string, description: string) => {
         console.log(title, description);
+        dispatch(createTodo(title, description))
+        setIsModalOpen(false);
     };
+
+    console.log(props.items)
 
     return (
         <>

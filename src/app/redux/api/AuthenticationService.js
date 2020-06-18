@@ -4,11 +4,12 @@ import qs from 'querystring'
 
 const config = {
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
     }
 }
 
-class AuthenticationService extends HttpService {
+class AuthenticationService extends HttpService { 
+
     async signin(username, password) {
         return post(`${this.BASE_URL}/auth/signin`, qs.stringify({
             username,

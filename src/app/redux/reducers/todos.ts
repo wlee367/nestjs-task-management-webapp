@@ -1,68 +1,31 @@
 import { Action, ActionTypes } from '../actions';
 
 const initialState = {
-        items: [ {
-            id: 'item-1',
-            content: 'Content of item 1.',
-            title: 'Title1',
-        },
-        {
-            id: 'item-2',
-            content: 'Content of item 2.',
-            title: 'Title2',
-        },
-        {
-            id: 'item-3',
-            content: 'Content of item 3.',
-            title: 'Title3',
-        },
-        {
-            id: 'item-4',
-            content: 'Content of item 4.',
-            title: 'Title4',
-        },
-       {
-            id: 'item-5',
-            content: 'Content of item 5.',
-            title: 'title5',
-        },
-        {
-            id: 'item-6',
-            content: 'Content of item 6.',
-            title: 'title6',
-        },
-        {
-            id: 'item-7',
-            content: 'Content of item 7.',
-            title: 'titley8',
-        }
-    ],
+    //     items: [ {
+    //         id: 'item-1',
+    //         content: 'Content of item 1.',
+    //         title: 'Title1',
+    //     },
+    // ],
+    items: [],
         columns: {
-            'column-1': {
-                id: 'column-1', 
-                title: 'Column 1',
-                itemIds: [
-                    'item-1',
-                    'item-2',
-                    'item-3',
-                    'item-4',
-                    'item-5',
-                    'item-6',
-                    'item-7'
-                ]
+            'OPEN': {
+                id: 'OPEN', 
+                title: 'Open',
+                itemIds: [] as string[]
             },
-            'column-2': {
-                id: 'column-2',
-                title: 'Column 2',
+            'IN-PROGRESS': {
+                id: 'IN-PROGRESS',
+                title: 'In Progress',
                 itemIds: [] as string[],
             },
-            'column-3': {
-                id: 'column-3',
-                title: 'Column 3',
+            'DONE': {
+                id: 'DONE',
+                title: 'Done',
                 itemIds: [] as string[],
             },
        },
-       columnsOrder: ['column-1', 'column-2', 'column-3']
+       columnsOrder: ['OPEN', 'IN-PROGRESS', 'DONE']
 }
 
 export const todosReducer = (state = initialState, action: Action) => {
@@ -71,6 +34,27 @@ export const todosReducer = (state = initialState, action: Action) => {
             return {
                 items: action.todos,
                 columns: action.columns
+            }
+        case ActionTypes.createTodo:
+            const newItem = {
+                id: action.id,
+                content: action.description,
+                title: action.title
+            }
+            let updatedColumns = state.columns;
+            if(action.status === 'DONE'){
+                updatedColumns["DONE"].itemIds.push(action.id);
+            } else if(action.status === 'IN-PROGRESS') {
+                updatedColumns["IN-PROGRESS"].itemIds.push(action.id);
+            } else if(action.status === 'OPEN'){
+                updatedColumns["OPEN"].itemIds.push(action.id);
+            }
+
+            console.log(updatedColumns)
+            return {
+                items: [...state.items, newItem],
+                columns: updatedColumns,
+                columnsOrder: state.columnsOrder
             }
         default:
             return state;

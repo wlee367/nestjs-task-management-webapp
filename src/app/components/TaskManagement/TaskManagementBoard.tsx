@@ -37,7 +37,7 @@ const mapState = (state: StoreState) => ({
 })
 
 const mapDispatch = {
-    moveTodo: (todos: any, columns: any) => moveTodo(todos, columns)
+    moveTodo: (todos: any, columns: any, shouldSave: boolean) => moveTodo(todos, columns, shouldSave)
 }
 
 const connector = connect(mapState, mapDispatch)
@@ -56,19 +56,20 @@ class TaskManagementBoard extends React.Component<
 > {
     // Initialize board state with board data
     state = {
-        items: this.props.todos ? this.props.todos : [],
-        columns: this.props.columns ? this.props.columns : [],
-        columnsOrder: this.props.columnsOrder ? this.props.columnsOrder : [],
         isOpen: false,
         title: '',
         content: '',
         id: '',
     };
 
+    shouldComponentUpdate(nextProps: any, nextState: any){
+        return this.props.todos !== nextProps.todos || this.props.columns !== nextProps.columns || this.props.detailId !== nextProps.detailId;
+    }
+
 
     componentDidMount() {
         if (this.props.detailId) {
-            const itemToShow: any = Object.values(this.state.items).filter(
+            const itemToShow: any = Object.values(this.props.todos).filter(
                 (item: any) => {
                     return item.id === this.props.detailId;
                 }
@@ -103,10 +104,10 @@ class TaskManagementBoard extends React.Component<
         }
 
         // Find column from which the item was dragged from
-        const columnStart = (this.state.columns as any)[source.droppableId];
+        const columnStart = (this.props.columns as any)[source.droppableId];
 
         // Find column in which the item was dropped
-        const columnFinish = (this.state.columns as any)[
+        const columnFinish = (this.props.columns as any)[
             destination.droppableId
         ];
 
@@ -128,18 +129,23 @@ class TaskManagementBoard extends React.Component<
             };
 
             // Create new board state with updated data for columns
+            //    todos: state.todos.items,
+    // columns: state.todos.columns,
+    // columnsOrder: state.todos.columnsOrder
             const newState = {
-                ...this.state,
+                todos: this.props.todos,
+                columnsOrder: this.props.todos.columnsOrder,
                 columns: {
-                    ...this.state.columns,
+                    ...this.props.columns,
                     [newColumnStart.id]: newColumnStart,
                 },
             };
 
             console.log(newState)
 
-            // Update the board state with new data
-            this.setState(newState);
+            // no need to fire an API call here because we're not interested in 
+            // persisting the order the tasks are in the columns. 
+            this.props.moveTodo(newState.todos, newState.columns, false);
         } else {
             // Moving items from one list to another
             // Get all item ids in source list
@@ -168,22 +174,25 @@ class TaskManagementBoard extends React.Component<
 
             // Create new board state with updated data for both, source and destination columns
             const newState = {
-                ...this.state,
+                todos: this.props.todos,
+                columnsOrder: this.props.todos.columnsOrder,
                 columns: {
-                    ...this.state.columns,
+                    ...this.props.columns,
                     [newColumnStart.id]: newColumnStart,
                     [newColumnFinish.id]: newColumnFinish,
                 },
             };
 
             // Update the board state with new data
-            this.setState(newState, () => {
-                this.props.moveTodo(newState.items, newState.columns);
-            });
+            // add true as a shouldSave prop - that way we can distinguish
+            // when to fire off api.
+            this.props.moveTodo(newState.todos, newState.columns, true);
         }
     };
 
     render() {
+        console.log(this.props)
+        console.log(this.state)
         return (
             <>
                 {this.state.isOpen && (
@@ -205,20 +214,23 @@ class TaskManagementBoard extends React.Component<
                     {/* Create context for drag & drop */}
                     <DragDropContext onDragEnd={this.onDragEnd}>
                         {/* Get all columns in the order specified in 'board-initial-data.ts' */}
-                        {this.state.columnsOrder.map((columnId: string) => {
+                        {this.props.columnsOrder.map((columnId: string) => {
                             // Get id of the current column
-                            const column = (this.state.columns as any)[
+                            const column = (this.props.columns as any)[
                                 columnId
                             ];
 
                             // Get item belonging to the current column
                             const items = column && column.itemIds.map(
                                 (itemId: string) => {
-                                    return Object.values(this.state.items).filter((item:any) => {
+                                    console.log(Object.values(this.props.todos))
+                                    return Object.values(this.props.todos).filter((item:any) => {
                                        return item.id === itemId
                                     })[0]
                                 }
                             );
+
+                            console.log(items)
 
                             // Render the BoardColumn component
                             return (
