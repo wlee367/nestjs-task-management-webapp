@@ -40,7 +40,7 @@ export default function (state = initialState, action: any) {
             return {
                 authenticated: true,
                 loading: false,
-                ...action.payload,
+                user: {userName: action.userName},
             };
         case LOADING_USER:
             return {

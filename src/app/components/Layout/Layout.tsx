@@ -1,7 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { Container } from '@material-ui/core';
 import MenuAppBar from './MenuAppBar/MenuAppBar';
 import Styled, { createGlobalStyle } from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { loadUser } from '../../redux/actions/users';
 
 type LayoutProps = {
     title?: string;
@@ -29,6 +31,13 @@ export const Layout: FunctionComponent<LayoutProps> = ({
     children,
     section,
 }) => {
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(loadUser())
+    }, [dispatch])
+
     return (
         <>
             <MenuAppBar />

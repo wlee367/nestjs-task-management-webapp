@@ -18,7 +18,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Layout } from '../Layout/Layout';
 import { useDispatch } from 'react-redux';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { loginUser } from '../../redux/actions/users';
 import { StoreState } from '../../redux/reducers';
 
@@ -64,21 +64,17 @@ export function Copyright() {
 export const Login = (props: any) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const history = useHistory();
     const typedUseSelector: TypedUseSelectorHook<StoreState> = useSelector;
 
     const user = typedUseSelector((state) => state.user);
 
     const error = user && user.authError;
 
-    if (user && user.authenticated) {
-        history.push('/board');
-    }
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [helperText, setHelperText] = useState('');
+    const [redirect, setRedirect] = useState(false)
 
     useEffect(() => {
         if (username.trim() && password.trim()) {
@@ -87,6 +83,13 @@ export const Login = (props: any) => {
             setIsButtonDisabled(true);
         }
     }, [username, password]);
+
+    useEffect(() => {
+        console.log(!error && user && user.authenticated)
+        if(!error && user && user.authenticated) {
+            setRedirect(true)
+        }
+    }, [user])
 
     const handleLogin = () => {
         const userData = {
@@ -110,6 +113,10 @@ export const Login = (props: any) => {
                 }}>The given credentials were incorrect.</p>
             )
         }
+    }
+
+    if(redirect) {
+        return <Redirect to={'/board'}/>
     }
 
     return (

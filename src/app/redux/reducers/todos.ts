@@ -59,7 +59,7 @@ export const todosReducer = (state = initialState, action: Action) => {
             const todosFromDb = action.payload;
             let items = [] as object[];
             let newColumns = state.columns;
-            todosFromDb.map(todoFromDb => {
+            todosFromDb.map((todoFromDb) => {
                 items.push({
                     id: todoFromDb.id,
                     content: todoFromDb.description,
@@ -68,10 +68,13 @@ export const todosReducer = (state = initialState, action: Action) => {
                 })
                 if(todoFromDb.status === 'DONE'){
                     newColumns["DONE"].itemIds.push(todoFromDb.id);
+                    newColumns["DONE"].itemIds = [...Array.from(new Set(newColumns["DONE"].itemIds))]
                 } else if(todoFromDb.status === 'IN_PROGRESS') {
                     newColumns["IN_PROGRESS"].itemIds.push(todoFromDb.id);
+                    newColumns["IN_PROGRESS"].itemIds = [...Array.from(new Set(newColumns["IN_PROGRESS"].itemIds))]
                 } else if(todoFromDb.status === 'OPEN'){
                     newColumns["OPEN"].itemIds.push(todoFromDb.id);
+                    newColumns["OPEN"].itemIds = [...Array.from(new Set(newColumns["OPEN"].itemIds))]
                 }
             })
 

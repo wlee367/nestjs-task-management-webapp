@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     createStyles,
     makeStyles,
@@ -18,10 +18,11 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import Link from '@material-ui/core/Link';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Redirect } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { StoreState } from '../../../redux/reducers';
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import {logoutUser} from '../../../redux/actions/users'
+import { TypedUseSelectorHook, useSelector, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -91,10 +92,14 @@ export default function MenuAppBar() {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
+    const dispatch = useDispatch();
     const typedUseSelector: TypedUseSelectorHook<StoreState> = useSelector;
     const user = typedUseSelector((state) => state.user);
 
+    console.log(user)
+
     const [auth, setAuth] = React.useState(user && user.authenticated);
+    const [redirect, setRedirect] = React.useState(false)
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -104,6 +109,11 @@ export default function MenuAppBar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = () => {
+        dispatch(logoutUser())
+        setRedirect(true)
+    }
 
     const AppBarRight = (auth: boolean) => {
         if (auth) {
@@ -131,7 +141,7 @@ export default function MenuAppBar() {
                             </ListItemIcon>
                             <ListItemText primary="Share your board" />
                         </StyledMenuItem>
-                        <StyledMenuItem>
+                        <StyledMenuItem onClick={handleLogout}>
                             <ListItemIcon>
                                 <ExitToAppIcon />
                             </ListItemIcon>
@@ -169,6 +179,16 @@ export default function MenuAppBar() {
     };
 
     const shouldDisplayArrow = shouldDisplayArrowBack();
+
+    useEffect(() => {
+        setAuth(user && user.authenticated)
+    }, [user])
+
+    if(redirect) {
+        return (
+            <Redirect to={'/'}/>
+        )
+    }
 
     return (
         <div className={classes.root}>

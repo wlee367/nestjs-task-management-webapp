@@ -11,6 +11,23 @@ import AuthenticationService from '../api/AuthenticationService';
 
 let AuthService = new AuthenticationService();
 
+interface localStorageObj {
+    username?: string;
+    accessToken?: string;
+}
+
+export const loadUser = () => (dispatch: any) => {
+    dispatch({type: LOADING_USER})
+    const userName =  AuthService.loadUserNameIfExists();
+
+    if(userName !== null) {
+        dispatch({
+            type: SET_USER,
+            userName: userName
+        })
+    } 
+}
+
 export const signUpUser = (userData: any) => (dispatch: any) =>{
     dispatch({type: LOADING_UI})
 
@@ -56,27 +73,11 @@ export const loginUser = (userData: any, history: any) => (dispatch: any) => {
         }
     });
 };
-//for fetching authenticated user information
-export const getUserData = () => (dispatch: any) => {
-    dispatch({ type: LOADING_USER });
-    axios
-        .get('/user')
-        .then((res) => {
-            console.log('user data', res.data);
-            dispatch({
-                type: SET_USER,
-                payload: res.data,
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-};
+
 export const logoutUser = () => (dispatch: any) => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
+    AuthService.signout();
     dispatch({
         type: SET_UNAUTHENTICATED,
     });
-    window.location.href = '/login'; // redirect to login page
+    // window.location.href = '/login'; // redirect to login page
 };

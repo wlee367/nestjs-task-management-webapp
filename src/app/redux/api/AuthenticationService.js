@@ -10,13 +10,20 @@ const config = {
 
 class AuthenticationService extends HttpService { 
 
+    loadUserNameIfExists() {
+        const token = localStorage.getItem('user') ? localStorage.getItem('user') : null;
+
+        return token ? JSON.parse(token).username : null
+    }
+
     async signin(username, password) {
         return post(`${this.BASE_URL}/auth/signin`, qs.stringify({
             username,
             password,
         }), config).then((response)=> {
             const accessToken = response.data.accessToken;
-            this.saveToken(accessToken);
+            const username = response.data.username;
+            this.saveUser(accessToken, username);
             if(response.status === 201) {
                 return {
                     isAuthError: false,
