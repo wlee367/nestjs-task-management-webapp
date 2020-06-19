@@ -1,18 +1,17 @@
-import axios from 'axios';
 import { Dispatch } from 'redux';
-import { ActionTypes, Action } from './types';
+import { ActionTypes } from './types';
 import PostsService from '../api/TasksService';
-import { stringify } from 'querystring';
 
 export interface Todo {
-    id: number;
     title: string;
-    completed: boolean;
+    description: string;
+    id: string;
+    status: string;
 }
 
 export interface FetchTodosAction {
     type: ActionTypes.fetchTodos;
-    payload: Todo[];
+    payload: Todo[]
 }
 
 export interface DeleteTodoAction {
@@ -34,14 +33,11 @@ export interface CreateTodoAction {
     status: string,
 }
 
-const url = 'http://jsonplaceholder.typicode.com/todos';
-
 let PostService = new PostsService();
 
 export const createTodo = (title: string, description: string) => {
     return async(dispatch: Dispatch) => {
         PostService.createTask(title, description).then((response) => {
-            console.log(response)
             const data = response.data;
             const description = data.description
             const id = data.id;
@@ -59,28 +55,38 @@ export const createTodo = (title: string, description: string) => {
     }
 }
 
-export const moveTodo = (todos: object, columns: object, shouldSaveToDb: boolean) => {
+
+export const moveTodo = (todos: object, columns: object, shouldSaveToDb: boolean, destinationId: string, itemId: string) => {
     return async(dispatch: Dispatch) => {
 
         // if shouldSaveToDb is true - fire off an api to update
-        
-
-        dispatch<MoveTodoAction>({
-            type: ActionTypes.moveTodos,
-            todos: todos,
-            columns: columns,
-        })
+        if(shouldSaveToDb){
+            PostService.updateTask(itemId, destinationId).then(response => {
+                dispatch<MoveTodoAction>({
+                    type: ActionTypes.moveTodos,
+                    todos: todos,
+                    columns: columns,
+                })
+            })
+        } else {
+            dispatch<MoveTodoAction>({
+                type: ActionTypes.moveTodos,
+                todos: todos,
+                columns: columns,
+            })
+        }
     }
 }
 
 export const fetchTodos = () => {
     return async (dispatch: Dispatch) => {
-        const response = await axios.get<Todo[]>(url);
 
-        dispatch<FetchTodosAction>({
-            type: ActionTypes.fetchTodos,
-            payload: response.data,
-        });
+        PostService.getAllTasks().then((response)=> {            
+            dispatch<FetchTodosAction>({
+                type: ActionTypes.fetchTodos,
+                payload: response.data,
+            });
+        })
     };
 };
 

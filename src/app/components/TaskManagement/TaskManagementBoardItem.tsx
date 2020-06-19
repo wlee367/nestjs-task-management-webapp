@@ -42,7 +42,7 @@ export const TaskManagementBoardItem = (props: BoardItemProps) => {
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
                 >
-                    {props.item.content}
+                    {props.item.title}
                 </BoardItemEl>
             )}
         </Draggable>

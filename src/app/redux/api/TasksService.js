@@ -19,7 +19,7 @@ class TasksService extends HttpService {
 
     // grabs all tasks that belong to the user. 
     async getAllTasks() {
-        return get(`${this.BASE_URL}/tasks`).then((response) => {
+        return get(`${this.BASE_URL}/tasks`, this.config).then((response) => {
             return response 
         }).catch((err) => {
             return {

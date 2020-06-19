@@ -71,12 +71,9 @@ export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (
     const dispatch = useDispatch();
 
     const handleSubmitForm = (title: string, description: string) => {
-        console.log(title, description);
         dispatch(createTodo(title, description))
         setIsModalOpen(false);
     };
-
-    console.log(props.items)
 
     return (
         <>

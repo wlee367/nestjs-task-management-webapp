@@ -14,8 +14,8 @@ const initialState = {
                 title: 'Open',
                 itemIds: [] as string[]
             },
-            'IN-PROGRESS': {
-                id: 'IN-PROGRESS',
+            'IN_PROGRESS': {
+                id: 'IN_PROGRESS',
                 title: 'In Progress',
                 itemIds: [] as string[],
             },
@@ -25,7 +25,7 @@ const initialState = {
                 itemIds: [] as string[],
             },
        },
-       columnsOrder: ['OPEN', 'IN-PROGRESS', 'DONE']
+       columnsOrder: ['OPEN', 'IN_PROGRESS', 'DONE']
 }
 
 export const todosReducer = (state = initialState, action: Action) => {
@@ -33,7 +33,8 @@ export const todosReducer = (state = initialState, action: Action) => {
         case ActionTypes.moveTodos:
             return {
                 items: action.todos,
-                columns: action.columns
+                columns: action.columns,
+                columnsOrder: state.columnsOrder
             }
         case ActionTypes.createTodo:
             const newItem = {
@@ -44,16 +45,39 @@ export const todosReducer = (state = initialState, action: Action) => {
             let updatedColumns = state.columns;
             if(action.status === 'DONE'){
                 updatedColumns["DONE"].itemIds.push(action.id);
-            } else if(action.status === 'IN-PROGRESS') {
-                updatedColumns["IN-PROGRESS"].itemIds.push(action.id);
+            } else if(action.status === 'IN_PROGRESS') {
+                updatedColumns["IN_PROGRESS"].itemIds.push(action.id);
             } else if(action.status === 'OPEN'){
                 updatedColumns["OPEN"].itemIds.push(action.id);
             }
-
-            console.log(updatedColumns)
             return {
                 items: [...state.items, newItem],
                 columns: updatedColumns,
+                columnsOrder: state.columnsOrder
+            }
+        case ActionTypes.fetchTodos: 
+            const todosFromDb = action.payload;
+            let items = [] as object[];
+            let newColumns = state.columns;
+            todosFromDb.map(todoFromDb => {
+                items.push({
+                    id: todoFromDb.id,
+                    content: todoFromDb.description,
+                    title: todoFromDb.title,
+                    status: todoFromDb.status
+                })
+                if(todoFromDb.status === 'DONE'){
+                    newColumns["DONE"].itemIds.push(todoFromDb.id);
+                } else if(todoFromDb.status === 'IN_PROGRESS') {
+                    newColumns["IN_PROGRESS"].itemIds.push(todoFromDb.id);
+                } else if(todoFromDb.status === 'OPEN'){
+                    newColumns["OPEN"].itemIds.push(todoFromDb.id);
+                }
+            })
+
+            return {
+                items: [...items],
+                columns: newColumns,
                 columnsOrder: state.columnsOrder
             }
         default:

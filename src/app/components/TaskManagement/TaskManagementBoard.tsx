@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { TaskManagementBoardColumn } from './TaskManagementBoardColumn';
 import { TaskDetailModal } from '../TaskDetailModal/TaskDetailModal';
 import { ActivityDrawer } from '../ActivityDrawer/ActivityDrawer';
-import { moveTodo } from '../../redux/actions';
+import { moveTodo, fetchTodos } from '../../redux/actions';
 import { connect, ConnectedProps } from 'react-redux'
 import { StoreState } from '../../redux/reducers';
 
@@ -37,7 +37,8 @@ const mapState = (state: StoreState) => ({
 })
 
 const mapDispatch = {
-    moveTodo: (todos: any, columns: any, shouldSave: boolean) => moveTodo(todos, columns, shouldSave)
+    moveTodo: (todos: any, columns: any, shouldSave: boolean, destinationId: string, itemId:string) => moveTodo(todos, columns, shouldSave, destinationId, itemId),
+    fetchTodo: () => fetchTodos()
 }
 
 const connector = connect(mapState, mapDispatch)
@@ -68,6 +69,7 @@ class TaskManagementBoard extends React.Component<
 
 
     componentDidMount() {
+        this.props.fetchTodo();
         if (this.props.detailId) {
             const itemToShow: any = Object.values(this.props.todos).filter(
                 (item: any) => {
@@ -111,6 +113,8 @@ class TaskManagementBoard extends React.Component<
             destination.droppableId
         ];
 
+        console.log(columnFinish)
+
         // Moving items in the same list
         if (columnStart === columnFinish) {
             // Get all item ids in currently active list
@@ -140,12 +144,9 @@ class TaskManagementBoard extends React.Component<
                     [newColumnStart.id]: newColumnStart,
                 },
             };
-
-            console.log(newState)
-
             // no need to fire an API call here because we're not interested in 
             // persisting the order the tasks are in the columns. 
-            this.props.moveTodo(newState.todos, newState.columns, false);
+            this.props.moveTodo(newState.todos, newState.columns, false, columnFinish.id, draggableId);
         } else {
             // Moving items from one list to another
             // Get all item ids in source list
@@ -186,13 +187,11 @@ class TaskManagementBoard extends React.Component<
             // Update the board state with new data
             // add true as a shouldSave prop - that way we can distinguish
             // when to fire off api.
-            this.props.moveTodo(newState.todos, newState.columns, true);
+            this.props.moveTodo(newState.todos, newState.columns, true, columnFinish.id, draggableId);
         }
     };
 
     render() {
-        console.log(this.props)
-        console.log(this.state)
         return (
             <>
                 {this.state.isOpen && (
@@ -223,15 +222,11 @@ class TaskManagementBoard extends React.Component<
                             // Get item belonging to the current column
                             const items = column && column.itemIds.map(
                                 (itemId: string) => {
-                                    console.log(Object.values(this.props.todos))
                                     return Object.values(this.props.todos).filter((item:any) => {
                                        return item.id === itemId
                                     })[0]
                                 }
                             );
-
-                            console.log(items)
-
                             // Render the BoardColumn component
                             return (
                                 <TaskManagementBoardColumn
