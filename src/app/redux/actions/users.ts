@@ -6,7 +6,6 @@ import {
   SET_AUTHENTICATED,
   AUTHENTICATION_FAILED,
 } from "./types";
-import axios from "axios";
 import AuthenticationService from "../api/AuthenticationService";
 
 let AuthService = new AuthenticationService();

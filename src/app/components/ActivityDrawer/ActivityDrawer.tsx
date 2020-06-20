@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
@@ -7,7 +7,6 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { mockActivityData } from "./mockData";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { fetchUserActivity } from "../../redux/actions/activity";
@@ -60,7 +59,6 @@ export const ActivityDrawer = () => {
     setState({ ...state, [anchor]: open });
   };
 
-  console.log(activity);
   const list = (anchor: Anchor, str: string) => (
     <div
       className={clsx(classes.list, {
