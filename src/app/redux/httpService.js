@@ -61,11 +61,11 @@ export default class HttpService {
   }
 
   saveUser(accessToken, username) {
-    this._accessToken = accessToken;
-    return localStorage.setItem(
-      "user",
-      JSON.stringify({ accessToken, username })
-    );
+    return new Promise((resolve, reject) => {
+      this._accessToken = accessToken;
+      localStorage.setItem("user", JSON.stringify({ accessToken, username }));
+      resolve();
+    });
   }
 
   loadToken() {
