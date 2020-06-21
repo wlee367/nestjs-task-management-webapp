@@ -13,6 +13,7 @@ import { fetchUserActivity } from "../../redux/actions/activity";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 import { StoreState } from "../../redux/reducers";
 import { UserActivity } from "../../redux/actions/activity";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles({
   list: {
@@ -24,6 +25,9 @@ const useStyles = makeStyles({
   activityListItem: {
     display: "flex",
     flexDirection: "column",
+  },
+  dateText: {
+    fontSize: "13px",
   },
 });
 
@@ -71,7 +75,7 @@ export const ActivityDrawer = () => {
       <List>
         {activity &&
           activity.length > 0 &&
-          activity.map((text: UserActivity) => {
+          activity.reverse().map((text: UserActivity) => {
             const date = moment(text.date).calendar(null, {
               lastDay: "[Yesterday]",
               sameDay: "[Today]",
@@ -90,8 +94,20 @@ export const ActivityDrawer = () => {
                     borderBottom: "1px solid grey",
                   }}
                 >
-                  <ListItemText secondary={date} />
-                  <ListItemText primary={text.description} />
+                  <ListItemText
+                    primary={text.description}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          component={"span"}
+                          variant={"body1"}
+                          className={classes.dateText}
+                        >
+                          {date}
+                        </Typography>
+                      </React.Fragment>
+                    }
+                  />
                 </div>
               </ListItem>
             );

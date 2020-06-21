@@ -75,8 +75,6 @@ export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (
     setIsModalOpen(false);
   };
 
-  console.log(props.items);
-
   return (
     <>
       {isModalOpen && (
@@ -116,7 +114,7 @@ export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (
             setIsModalOpen(!isModalOpen);
           }}
         >
-          + Add a cuh
+          + Add a Task
         </AddCardLink>
       </BoardColumnWrapper>
     </>

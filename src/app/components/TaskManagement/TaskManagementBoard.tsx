@@ -5,7 +5,12 @@ import styled from "styled-components";
 import { TaskManagementBoardColumn } from "./TaskManagementBoardColumn";
 import { TaskDetailModal } from "../TaskDetailModal/TaskDetailModal";
 import { ActivityDrawer } from "../ActivityDrawer/ActivityDrawer";
-import { moveTodo, fetchTodos } from "../../redux/actions";
+import {
+  moveTodo,
+  fetchTodos,
+  fetchTodoById,
+  ToggleModal,
+} from "../../redux/actions";
 import { connect, ConnectedProps } from "react-redux";
 import { StoreState } from "../../redux/reducers";
 
@@ -33,6 +38,11 @@ const mapState = (state: StoreState) => ({
   todos: state.todos.items,
   columns: state.todos.columns,
   columnsOrder: state.todos.columnsOrder,
+  selectedTitle: state.todos.selectedTitle,
+  selectedDescription: state.todos.selectedDescription,
+  selectedId: state.todos.selectedId,
+  selectedStatus: state.todos.selectedStatus,
+  isOpen: state.todos.isDetailModalOpen,
 });
 
 const mapDispatch = {
@@ -44,6 +54,8 @@ const mapDispatch = {
     itemId: string
   ) => moveTodo(todos, columns, shouldSave, destinationId, itemId),
   fetchTodo: () => fetchTodos(),
+  fetchTodoById: (id: string) => fetchTodoById(id),
+  toggleModal: () => ToggleModal(),
 };
 
 const connector = connect(mapState, mapDispatch);
@@ -59,39 +71,22 @@ class TaskManagementBoard extends React.Component<
   TaskManagementBoardProps,
   any
 > {
-  // Initialize board state with board data
-  state = {
-    isOpen: false,
-    title: "",
-    content: "",
-    id: "",
-  };
-
   shouldComponentUpdate(nextProps: any, nextState: any) {
     return (
       this.props.todos !== nextProps.todos ||
       this.props.columns !== nextProps.columns ||
-      this.props.detailId !== nextProps.detailId
+      this.props.detailId !== nextProps.detailId ||
+      this.props.isOpen !== nextProps.isOpen
     );
   }
 
   componentDidMount() {
-    this.props.fetchTodo();
-    if (this.props.detailId) {
-      const itemToShow: any = Object.values(this.props.todos).filter(
-        (item: any) => {
-          return item.id === this.props.detailId;
-        }
-      );
-
-      if (itemToShow && itemToShow.length > 0) {
-        this.setState({
-          isOpen: true,
-          title: itemToShow[0].title,
-          content: itemToShow[0].content,
-          id: itemToShow[0].id,
-        });
-      }
+    console.log("yo yo");
+    if (this.props.detailId !== undefined) {
+      console.log("fetching todo by id.");
+      this.props.fetchTodoById(this.props.detailId);
+    } else {
+      this.props.fetchTodo();
     }
   }
 
@@ -117,8 +112,6 @@ class TaskManagementBoard extends React.Component<
 
     // Find column in which the item was dropped
     const columnFinish = (this.props.columns as any)[destination.droppableId];
-
-    console.log(columnFinish);
 
     // Moving items in the same list
     if (columnStart === columnFinish) {
@@ -209,15 +202,17 @@ class TaskManagementBoard extends React.Component<
   };
 
   render() {
+    console.log(this.props.isOpen);
     return (
       <>
-        {this.state.isOpen && (
+        {this.props.isOpen && (
           <TaskDetailModal
-            title={this.state.title}
-            content={this.state.content}
-            isOpen={this.state.isOpen}
+            title={this.props.selectedTitle}
+            content={this.props.selectedDescription}
+            isOpen={this.props.isOpen}
             toggleModal={() => {
-              this.setState({ isOpen: !this.state.isOpen });
+              // this.setState({ isOpen: !this.state.isOpen });
+              this.props.toggleModal();
             }}
           />
         )}

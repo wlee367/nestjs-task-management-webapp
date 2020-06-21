@@ -1,8 +1,8 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import  TaskManagementBoard from '../../components/TaskManagement/TaskManagementBoard';
-import { createGlobalStyle } from 'styled-components';
-import { Layout } from '../../components/Layout/Layout';
+import React from "react";
+import { useParams, useHistory } from "react-router-dom";
+import TaskManagementBoard from "../../components/TaskManagement/TaskManagementBoard";
+import { createGlobalStyle } from "styled-components";
+import { Layout } from "../../components/Layout/Layout";
 
 // Use createGlobalStyle to change the background of 'body' element
 const GlobalStyle = createGlobalStyle`
@@ -17,18 +17,17 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 interface RouteParams {
-    id: string;
+  id: string;
 }
 
 export const TasksDetails = () => {
-    const params = useParams<RouteParams>();
-    console.log(params.id);
-    return (
-        <>
-            <Layout>
-                <TaskManagementBoard detailId={params.id} />
-                <GlobalStyle />
-            </Layout>
-        </>
-    );
+  const params = useParams<RouteParams>();
+  return (
+    <>
+      <Layout>
+        <TaskManagementBoard detailId={params.id} />
+        <GlobalStyle />
+      </Layout>
+    </>
+  );
 };

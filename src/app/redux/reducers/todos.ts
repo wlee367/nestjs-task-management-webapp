@@ -1,12 +1,10 @@
 import { Action, ActionTypes } from "../actions";
-
 const initialState = {
-  //     items: [ {
-  //         id: 'item-1',
-  //         content: 'Content of item 1.',
-  //         title: 'Title1',
-  //     },
-  // ],
+  selectedTitle: "",
+  selectedDescription: "",
+  selectedId: "",
+  selectedStatus: "",
+  isDetailModalOpen: false,
   items: [],
   columns: {
     OPEN: {
@@ -30,8 +28,14 @@ const initialState = {
 
 export const todosReducer = (state = initialState, action: Action) => {
   switch (action.type) {
+    case ActionTypes.toggleModal:
+      return {
+        ...state,
+        isDetailModalOpen: !state.isDetailModalOpen,
+      };
     case ActionTypes.moveTodos:
       return {
+        ...state,
         items: action.todos,
         columns: action.columns,
         columnsOrder: state.columnsOrder,
@@ -51,9 +55,19 @@ export const todosReducer = (state = initialState, action: Action) => {
         updatedColumns["OPEN"].itemIds.push(action.id);
       }
       return {
+        ...state,
         items: [...state.items, newItem],
         columns: updatedColumns,
         columnsOrder: state.columnsOrder,
+      };
+    case ActionTypes.fetchTodoById:
+      return {
+        ...state,
+        selectedTitle: action.payload.title,
+        selectedDescription: action.payload.description,
+        selectedId: action.payload.id,
+        selectedStatus: action.payload.status,
+        isDetailModalOpen: true,
       };
     case ActionTypes.fetchTodos:
       const todosFromDb = action.payload;
@@ -87,6 +101,7 @@ export const todosReducer = (state = initialState, action: Action) => {
         });
 
       return {
+        ...state,
         items: [...items],
         columns: newColumns,
         columnsOrder: state.columnsOrder,

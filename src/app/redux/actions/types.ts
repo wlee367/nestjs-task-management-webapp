@@ -3,6 +3,8 @@ import {
   DeleteTodoAction,
   MoveTodoAction,
   CreateTodoAction,
+  FetchTodoByIdAction,
+  ToggleModalAction,
 } from "./todos";
 import { FetchActivityAction } from "./activity";
 
@@ -11,13 +13,17 @@ export enum ActionTypes {
   deleteTodo,
   moveTodos,
   createTodo,
+  fetchTodoById,
+  toggleModal,
 }
 
 export type Action =
   | FetchTodosAction
   | DeleteTodoAction
   | MoveTodoAction
-  | CreateTodoAction;
+  | CreateTodoAction
+  | FetchTodoByIdAction
+  | ToggleModalAction;
 
 export type ActivityAction = FetchActivityAction;
 

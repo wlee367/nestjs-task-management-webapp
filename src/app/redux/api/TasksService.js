@@ -29,7 +29,7 @@ class TasksService extends HttpService {
 
   // grabs a singular task by id.
   async getTaskById(taskId) {
-    return get(`${this.BASE_URL}/tasks/${taskId}`)
+    return get(`${this.BASE_URL}/tasks/${taskId}`, this.config)
       .then((response) => {
         return response;
       })
