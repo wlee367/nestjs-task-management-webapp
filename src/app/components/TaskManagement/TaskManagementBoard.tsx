@@ -13,7 +13,8 @@ import {
 } from "../../redux/actions";
 import { connect, ConnectedProps } from "react-redux";
 import { StoreState } from "../../redux/reducers";
-
+import Fab from "@material-ui/core/Fab";
+import AddIcon from "@material-ui/icons/Add";
 // Create styles board element properties
 const BoardEl = styled.div`
   display: flex;
@@ -71,19 +72,26 @@ class TaskManagementBoard extends React.Component<
   TaskManagementBoardProps,
   any
 > {
+  state = {
+    isCreateModalOpen: false,
+  };
+
+  toggleIsCreateModal = () => {
+    this.setState({ isCreateModalOpen: !this.state.isCreateModalOpen });
+  };
+
   shouldComponentUpdate(nextProps: any, nextState: any) {
     return (
       this.props.todos !== nextProps.todos ||
       this.props.columns !== nextProps.columns ||
       this.props.detailId !== nextProps.detailId ||
-      this.props.isOpen !== nextProps.isOpen
+      this.props.isOpen !== nextProps.isOpen ||
+      this.state.isCreateModalOpen !== nextState.isCreateModalOpen
     );
   }
 
   componentDidMount() {
-    console.log("yo yo");
     if (this.props.detailId !== undefined) {
-      console.log("fetching todo by id.");
       this.props.fetchTodoById(this.props.detailId);
     } else {
       this.props.fetchTodo();
@@ -202,7 +210,6 @@ class TaskManagementBoard extends React.Component<
   };
 
   render() {
-    console.log(this.props.isOpen);
     return (
       <>
         {this.props.isOpen && (
@@ -242,10 +249,27 @@ class TaskManagementBoard extends React.Component<
                   key={column.id}
                   column={column}
                   items={items}
+                  isCreateModalOpen={this.state.isCreateModalOpen}
+                  toggleModal={this.toggleIsCreateModal}
                 />
               );
             })}
           </DragDropContext>
+          <Fab
+            style={{
+              margin: 0,
+              top: "auto",
+              right: 20,
+              bottom: 20,
+              left: "auto",
+              position: "fixed",
+            }}
+            aria-label={"Add"}
+            color={"primary" as "primary"}
+            onClick={this.toggleIsCreateModal}
+          >
+            <AddIcon />
+          </Fab>
         </BoardEl>
       </>
     );

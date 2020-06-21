@@ -64,57 +64,64 @@ export const ActivityDrawer = () => {
   };
 
   const list = (anchor: Anchor, str: string) => (
-    <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === "top" || anchor === "bottom",
-      })}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {activity &&
-          activity.length > 0 &&
-          activity.reverse().map((text: UserActivity) => {
-            const date = moment(text.date).calendar(null, {
-              lastDay: "[Yesterday]",
-              sameDay: "[Today]",
-              nextDay: "[Tomorrow]",
-              lastWeek: "[Last] dddd",
-              nextWeek: "dddd",
-              sameElse: "L",
-            });
-            return (
-              <ListItem key={text.id} alignItems={"center"}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    borderBottom: "1px solid grey",
-                  }}
-                >
-                  <ListItemText
-                    primary={text.description}
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          component={"span"}
-                          variant={"body1"}
-                          className={classes.dateText}
-                        >
-                          {date}
-                        </Typography>
-                      </React.Fragment>
-                    }
-                  />
-                </div>
-              </ListItem>
-            );
-          })}
-      </List>
-      <Divider />
-    </div>
+    <>
+      {activity && activity.length === 0 && (
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Start by creating a task :){" "}
+        </div>
+      )}
+      <div
+        className={clsx(classes.list, {
+          [classes.fullList]: anchor === "top" || anchor === "bottom",
+        })}
+        role="presentation"
+        onClick={toggleDrawer(anchor, false)}
+        onKeyDown={toggleDrawer(anchor, false)}
+      >
+        <List>
+          {activity &&
+            activity.length > 0 &&
+            activity.reverse().map((text: UserActivity) => {
+              const date = moment(text.date).calendar();
+              return (
+                <ListItem key={text.id} alignItems={"center"}>
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      borderBottom: "1px solid grey",
+                    }}
+                  >
+                    <ListItemText
+                      primary={text.description}
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            component={"span"}
+                            variant={"body1"}
+                            className={classes.dateText}
+                          >
+                            {date}
+                          </Typography>
+                        </React.Fragment>
+                      }
+                    />
+                  </div>
+                </ListItem>
+              );
+            })}
+        </List>
+        {/* <Divider /> */}
+      </div>
+    </>
   );
 
   return (

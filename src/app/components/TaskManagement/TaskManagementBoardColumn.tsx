@@ -11,6 +11,8 @@ type BoardColumnProps = {
   key: string;
   column: any;
   items: any;
+  isCreateModalOpen: boolean;
+  toggleModal: () => void;
 };
 
 // Define types for board column content style properties
@@ -67,22 +69,21 @@ const AddCardLink = styled.div`
 export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (
   props
 ) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
 
   const handleSubmitForm = (title: string, description: string) => {
     dispatch(createTodo(title, description));
-    setIsModalOpen(false);
+    props.toggleModal();
   };
 
   return (
     <>
-      {isModalOpen && (
+      {props.isCreateModalOpen && (
         <NewCardModal
           submitForm={handleSubmitForm}
-          isOpen={isModalOpen}
+          isOpen={props.isCreateModalOpen}
           toggleModal={() => {
-            setIsModalOpen(!isModalOpen);
+            props.toggleModal();
           }}
         />
       )}
@@ -109,13 +110,6 @@ export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (
             </BoardColumnContent>
           )}
         </Droppable>
-        <AddCardLink
-          onClick={() => {
-            setIsModalOpen(!isModalOpen);
-          }}
-        >
-          + Add a Task
-        </AddCardLink>
       </BoardColumnWrapper>
     </>
   );
