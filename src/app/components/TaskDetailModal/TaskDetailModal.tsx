@@ -6,7 +6,22 @@ import { useHistory } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import Styled from "styled-components";
 import ListIcon from "@material-ui/icons/List";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import StatusToggler from "../StatusToggler/StatusToggler";
+import { TaskStatus } from "../StatusToggler/StatusEnums";
+
+const useStyles = makeStyles((theme: Theme) => ({
+  dialogPaper: {
+    minHeight: "80vh",
+    maxHeight: "80vh",
+  },
+
+  dialogContent: {
+    display: "flex",
+    flexDirection: "row",
+  },
+}));
 
 type TaskDetailModalProps = {
   toggleModal: () => void;
@@ -29,6 +44,11 @@ const StyledCloseIcon = Styled(CloseIcon)`
 `;
 
 const StyledContentContainer = Styled.div`
+    width: 75%;
+`;
+
+const StyledWidgetContainer = Styled.div`
+    width: 25%;
 `;
 
 const StyledTitleHeader = Styled.div`
@@ -41,6 +61,8 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
 
   const history = useHistory();
 
+  const classes = useStyles();
+
   const handleClose = () => {
     toggleModal();
     history.goBack();
@@ -48,6 +70,7 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
   return (
     <div>
       <Dialog
+        classes={{ paper: classes.dialogPaper }}
         disableBackdropClick={true}
         fullWidth={true}
         maxWidth="md"
@@ -56,18 +79,23 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle
-          style={{ paddingTop: 0, alignItems: "center" }}
+          style={{ paddingTop: "1.5em", alignItems: "center" }}
           id="form-dialog-title"
         >
           <StyledDialogTitleDiv>
-            <div style={{ alignItems: "center", display: "flex" }}>
+            <div
+              style={{ alignItems: "center", display: "flex", width: "100%" }}
+            >
               <AssignmentIcon />
-              <div style={{ marginLeft: "0.5em" }}>{title}</div>
+              <div style={{ marginLeft: "0.5em", width: "100%" }}>{title}</div>
             </div>
             <StyledCloseIcon onClick={handleClose} />
           </StyledDialogTitleDiv>
         </DialogTitle>
-        <DialogContent style={{ paddingTop: 0 }}>
+        <DialogContent
+          classes={{ root: classes.dialogContent }}
+          style={{ paddingTop: 0, paddingBottom: "1.5em" }}
+        >
           <StyledContentContainer>
             <StyledTitleHeader>
               <ListIcon />
@@ -75,6 +103,14 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
             </StyledTitleHeader>
             {content}
           </StyledContentContainer>
+          <StyledWidgetContainer>
+            <StatusToggler
+              status={TaskStatus.OPEN}
+              changeStatus={() => {
+                console.log("change");
+              }}
+            />
+          </StyledWidgetContainer>
         </DialogContent>
       </Dialog>
     </div>
