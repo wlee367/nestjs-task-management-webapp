@@ -86,6 +86,7 @@ class TaskManagementBoard extends React.Component<
       this.props.columns !== nextProps.columns ||
       this.props.detailId !== nextProps.detailId ||
       this.props.isOpen !== nextProps.isOpen ||
+      this.props.selectedStatus !== nextProps.selectedStatus ||
       this.state.isCreateModalOpen !== nextState.isCreateModalOpen
     );
   }
@@ -209,6 +210,69 @@ class TaskManagementBoard extends React.Component<
     }
   };
 
+  handleUpdateSingleTask = (newStatus: string) => {
+    // Find column from which the item was originally in
+    const columnStart = (this.props.columns as any)[this.props.selectedStatus];
+
+    // Find column in which the item was changed to
+    const columnFinish = (this.props.columns as any)[newStatus];
+
+    // Moving items from one list to another
+    // Get all item ids in source list
+    const newStartItemsIds = Array.from(columnStart.itemIds);
+
+    let originalIndex: any = newStartItemsIds.filter((itemIds: any) => {
+      return itemIds === this.props.selectedId;
+    })[0];
+
+    // Remove the id of dragged item from its original position
+    newStartItemsIds.splice(originalIndex, 1);
+
+    // // Create new, updated, object with data for source column
+    const newColumnStart = {
+      ...columnStart,
+      itemIds: newStartItemsIds,
+    };
+
+    // // Get all item ids in destination list
+    const newFinishItemsIds = Array.from(columnFinish.itemIds);
+
+    let originalFinishIndex: any = newFinishItemsIds.filter((itemIds: any) => {
+      return itemIds === this.props.selectedId;
+    })[0];
+
+    // // Insert the id of dragged item to the new position in destination list
+    newFinishItemsIds.splice(originalFinishIndex, 0, this.props.selectedId);
+
+    // // Create new, updated, object with data for destination column
+    const newColumnFinish = {
+      ...columnFinish,
+      itemIds: newFinishItemsIds,
+    };
+
+    // // Create new board state with updated data for both, source and destination columns
+    const newState = {
+      todos: this.props.todos,
+      columnsOrder: this.props.todos.columnsOrder,
+      columns: {
+        ...this.props.columns,
+        [newColumnStart.id]: newColumnStart,
+        [newColumnFinish.id]: newColumnFinish,
+      },
+    };
+
+    // // Update the board state with new data
+    // // add true as a shouldSave prop - that way we can distinguish
+    // // when to fire off api.
+    this.props.moveTodo(
+      newState.todos,
+      newState.columns,
+      true,
+      columnFinish.id,
+      this.props.selectedId
+    );
+  };
+
   render() {
     return (
       <>
@@ -217,9 +281,12 @@ class TaskManagementBoard extends React.Component<
             title={this.props.selectedTitle}
             content={this.props.selectedDescription}
             isOpen={this.props.isOpen}
+            selectedStatus={this.props.selectedStatus}
             toggleModal={() => {
-              // this.setState({ isOpen: !this.state.isOpen });
               this.props.toggleModal();
+            }}
+            onStatusChange={(newStatus: string) => {
+              this.handleUpdateSingleTask(newStatus);
             }}
           />
         )}

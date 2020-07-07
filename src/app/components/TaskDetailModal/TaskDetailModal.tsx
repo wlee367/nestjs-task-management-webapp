@@ -28,6 +28,8 @@ type TaskDetailModalProps = {
   isOpen: boolean;
   title: string;
   content: string;
+  selectedStatus: string;
+  onStatusChange: (newStatus: string) => void;
 };
 
 const StyledDialogTitleDiv = Styled.div`
@@ -57,7 +59,7 @@ const StyledTitleHeader = Styled.div`
 `;
 
 export const TaskDetailModal = (props: TaskDetailModalProps) => {
-  const { isOpen, toggleModal, title, content } = props;
+  const { isOpen, toggleModal, title, content, selectedStatus } = props;
 
   const history = useHistory();
 
@@ -67,6 +69,27 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
     toggleModal();
     history.goBack();
   };
+
+  /**
+   * @param status
+   */
+  const determineSelectedStatusEnum = (status: string) => {
+    switch (status) {
+      case "OPEN":
+        return TaskStatus.OPEN;
+      case "IN_PROGRESS":
+        return TaskStatus.IN_PROGRESS;
+      case "DONE":
+        return TaskStatus.DONE;
+      default:
+        return TaskStatus.OPEN;
+    }
+  };
+
+  const handleStatusOnChange = (newStatus: string) => {
+    props.onStatusChange(newStatus)
+  }
+
   return (
     <div>
       <Dialog
@@ -105,9 +128,9 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
           </StyledContentContainer>
           <StyledWidgetContainer>
             <StatusToggler
-              status={TaskStatus.OPEN}
-              changeStatus={() => {
-                console.log("change");
+              status={determineSelectedStatusEnum(selectedStatus)}
+              changeStatus={(newStatus: string) => {
+                handleStatusOnChange(newStatus)
               }}
             />
           </StyledWidgetContainer>

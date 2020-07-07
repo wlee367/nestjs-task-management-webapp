@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TaskStatus } from "./StatusEnums";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type StatusTogglerProps = {
   status: TaskStatus;
-  changeStatus: (status: TaskStatus) => void;
+  changeStatus: (newStatus: TaskStatus) => void;
 };
 
 export default function StatusToggler(props: StatusTogglerProps) {
@@ -37,9 +37,9 @@ export default function StatusToggler(props: StatusTogglerProps) {
     setOpen(true);
   };
 
-  const handleSetStatus = (status: TaskStatus) => {
-    props.changeStatus(status);
-    setStatus(status);
+  const handleSetStatus = (newStatus: TaskStatus) => {
+    props.changeStatus(newStatus);
+    setStatus(newStatus);
   };
 
   return (
@@ -55,6 +55,7 @@ export default function StatusToggler(props: StatusTogglerProps) {
           value={status}
           onChange={(event) => {
             const newValue = event.target.value;
+            console.log(newValue);
             if (newValue === TaskStatus.OPEN) {
               handleSetStatus(TaskStatus.OPEN);
             } else if (newValue === TaskStatus.IN_PROGRESS) {
