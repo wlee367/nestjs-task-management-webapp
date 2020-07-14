@@ -7,6 +7,7 @@ import {
   ToggleModalAction,
 } from "./todos";
 import { FetchActivityAction } from "./activity";
+import { CreateCommentAction } from "./comment";
 
 export enum ActionTypes {
   fetchTodos,
@@ -23,7 +24,8 @@ export type Action =
   | MoveTodoAction
   | CreateTodoAction
   | FetchTodoByIdAction
-  | ToggleModalAction;
+  | ToggleModalAction
+  | CreateCommentAction;
 
 export type ActivityAction = FetchActivityAction;
 
