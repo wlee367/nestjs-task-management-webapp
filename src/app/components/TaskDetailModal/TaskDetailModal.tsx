@@ -10,6 +10,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import StatusToggler from "../StatusToggler/StatusToggler";
 import { TaskStatus } from "../StatusToggler/StatusEnums";
+import { CommentInput } from "../CommentInput/CommentInput";
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialogPaper: {
@@ -47,6 +48,29 @@ const StyledCloseIcon = Styled(CloseIcon)`
 
 const StyledContentContainer = Styled.div`
     width: 75%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em;
+`;
+
+const StyledDetailContent = Styled.div``;
+
+const StyledDetailHeader = Styled.div`
+    height: 50%;
+`;
+
+const StyledCommentsContainer = Styled.div`
+    height: 50%;
+`;
+
+const StyledCommentsHeader = Styled.div``;
+
+const StyledCommentInputContainer = Styled.div`
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
 `;
 
 const StyledWidgetContainer = Styled.div`
@@ -87,8 +111,8 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
   };
 
   const handleStatusOnChange = (newStatus: string) => {
-    props.onStatusChange(newStatus)
-  }
+    props.onStatusChange(newStatus);
+  };
 
   return (
     <div>
@@ -120,17 +144,35 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
           style={{ paddingTop: 0, paddingBottom: "1.5em" }}
         >
           <StyledContentContainer>
-            <StyledTitleHeader>
-              <ListIcon />
-              <h3 style={{ marginLeft: "0.5em" }}>Details: </h3>
-            </StyledTitleHeader>
-            {content}
+            <StyledDetailHeader>
+              <StyledTitleHeader>
+                <ListIcon />
+                <h3 style={{ marginLeft: "0.5em" }}>Details: </h3>
+              </StyledTitleHeader>
+              <StyledDetailContent>
+                <p>{content}</p>
+              </StyledDetailContent>
+            </StyledDetailHeader>
+            <StyledCommentsContainer>
+              <StyledCommentsHeader>
+                {" "}
+                <h3 style={{ marginLeft: "0.5em" }}>Comments: </h3>
+              </StyledCommentsHeader>
+              <StyledCommentInputContainer>
+                <CommentInput
+                  userInitials={"JL"}
+                  submitComment={() => {
+                    console.log("yo");
+                  }}
+                />
+              </StyledCommentInputContainer>
+            </StyledCommentsContainer>
           </StyledContentContainer>
           <StyledWidgetContainer>
             <StatusToggler
               status={determineSelectedStatusEnum(selectedStatus)}
               changeStatus={(newStatus: string) => {
-                handleStatusOnChange(newStatus)
+                handleStatusOnChange(newStatus);
               }}
             />
           </StyledWidgetContainer>
