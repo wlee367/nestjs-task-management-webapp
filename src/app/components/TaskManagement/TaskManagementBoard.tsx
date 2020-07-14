@@ -210,6 +210,9 @@ class TaskManagementBoard extends React.Component<
     }
   };
 
+  /**
+   * fired from within the status toggler component.
+   */
   handleUpdateSingleTask = (newStatus: string) => {
     // Find column from which the item was originally in
     const columnStart = (this.props.columns as any)[this.props.selectedStatus];
@@ -219,14 +222,17 @@ class TaskManagementBoard extends React.Component<
 
     // Moving items from one list to another
     // Get all item ids in source list
-    const newStartItemsIds = Array.from(columnStart.itemIds);
+    let newStartItemsIds = Array.from(columnStart.itemIds);
 
     let originalIndex: any = newStartItemsIds.filter((itemIds: any) => {
       return itemIds === this.props.selectedId;
     })[0];
 
     // Remove the id of dragged item from its original position
-    newStartItemsIds.splice(originalIndex, 1);
+    // newStartItemsIds.splice(originalIndex, 1);
+    newStartItemsIds = newStartItemsIds.filter((newStartItemsId) => {
+      return newStartItemsId !== originalIndex;
+    });
 
     // // Create new, updated, object with data for source column
     const newColumnStart = {
