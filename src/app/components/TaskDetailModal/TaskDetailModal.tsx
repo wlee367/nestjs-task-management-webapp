@@ -2,7 +2,7 @@ import React from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import CloseIcon from "@material-ui/icons/Close";
 import Styled from "styled-components";
 import ListIcon from "@material-ui/icons/List";
@@ -11,6 +11,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import StatusToggler from "../StatusToggler/StatusToggler";
 import { TaskStatus } from "../StatusToggler/StatusEnums";
 import { CommentInput } from "../CommentInput/CommentInput";
+import { Comment } from "../../redux/actions/index";
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialogPaper: {
@@ -30,7 +31,9 @@ type TaskDetailModalProps = {
   title: string;
   content: string;
   selectedStatus: string;
+  comments: [];
   onStatusChange: (newStatus: string) => void;
+  onSubmitComment: (taskId: string, commentText: string) => void;
 };
 
 const StyledDialogTitleDiv = Styled.div`
@@ -56,11 +59,12 @@ const StyledContentContainer = Styled.div`
 const StyledDetailContent = Styled.div``;
 
 const StyledDetailHeader = Styled.div`
-    height: 50%;
+    max-height: 30%;
 `;
 
 const StyledCommentsContainer = Styled.div`
-    height: 50%;
+    // height: 50%;
+    min-height: 50%;
 `;
 
 const StyledCommentsHeader = Styled.div``;
@@ -82,12 +86,26 @@ const StyledTitleHeader = Styled.div`
     align-items: center;
 `;
 
+const CommentCard = Styled.div`
+    padding: 1em 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+interface TaskDetailModalParam {
+  id: string;
+}
+
 export const TaskDetailModal = (props: TaskDetailModalProps) => {
   const { isOpen, toggleModal, title, content, selectedStatus } = props;
 
   const history = useHistory();
 
   const classes = useStyles();
+
+  const params: TaskDetailModalParam = useParams();
 
   const handleClose = () => {
     toggleModal();
@@ -112,6 +130,12 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
 
   const handleStatusOnChange = (newStatus: string) => {
     props.onStatusChange(newStatus);
+  };
+
+  const handleSubmitComment = (comment: string) => {
+    let { id } = params;
+
+    props.onSubmitComment(id, comment);
   };
 
   return (
@@ -161,11 +185,22 @@ export const TaskDetailModal = (props: TaskDetailModalProps) => {
               <StyledCommentInputContainer>
                 <CommentInput
                   userInitials={"JL"}
-                  submitComment={() => {
-                    console.log("yo");
+                  submitComment={(comment: string) => {
+                    handleSubmitComment(comment);
                   }}
                 />
               </StyledCommentInputContainer>
+              {props.comments &&
+                props.comments.map((comment: Comment) => {
+                  console.log(comment);
+                  return (
+                    <CommentCard key={comment.id}>
+                      <div>{comment.user.username}</div>
+                      {comment.commentText}
+                      <div>{comment.createdAt}</div>
+                    </CommentCard>
+                  );
+                })}
             </StyledCommentsContainer>
           </StyledContentContainer>
           <StyledWidgetContainer>

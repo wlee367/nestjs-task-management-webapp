@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { TaskStatus } from "./StatusEnums";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";

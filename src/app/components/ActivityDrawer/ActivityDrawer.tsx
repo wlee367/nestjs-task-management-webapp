@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import moment from "moment";
@@ -128,7 +127,13 @@ export const ActivityDrawer = () => {
     <div>
       {(["right"] as Anchor[]).map((anchor) => (
         <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>...Activity</Button>
+          <Button
+            onClick={toggleDrawer(anchor, true)}
+            color="primary"
+            variant={"contained"}
+          >
+            Activity
+          </Button>
           <SwipeableDrawer
             anchor={anchor}
             open={state[anchor]}

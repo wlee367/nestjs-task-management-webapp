@@ -10,6 +10,7 @@ import {
   fetchTodos,
   fetchTodoById,
   ToggleModal,
+  createCommentOnTask,
 } from "../../redux/actions";
 import { connect, ConnectedProps } from "react-redux";
 import { StoreState } from "../../redux/reducers";
@@ -44,6 +45,7 @@ const mapState = (state: StoreState) => ({
   selectedId: state.todos.selectedId,
   selectedStatus: state.todos.selectedStatus,
   isOpen: state.todos.isDetailModalOpen,
+  comments: state.todos.comments,
 });
 
 const mapDispatch = {
@@ -57,6 +59,8 @@ const mapDispatch = {
   fetchTodo: () => fetchTodos(),
   fetchTodoById: (id: string) => fetchTodoById(id),
   toggleModal: () => ToggleModal(),
+  createComment: (taskId: string, commentText: string) =>
+    createCommentOnTask(commentText, taskId),
 };
 
 const connector = connect(mapState, mapDispatch);
@@ -93,6 +97,7 @@ class TaskManagementBoard extends React.Component<
 
   componentDidMount() {
     if (this.props.detailId !== undefined) {
+      this.props.fetchTodo();
       this.props.fetchTodoById(this.props.detailId);
     } else {
       this.props.fetchTodo();
@@ -294,6 +299,10 @@ class TaskManagementBoard extends React.Component<
             onStatusChange={(newStatus: string) => {
               this.handleUpdateSingleTask(newStatus);
             }}
+            onSubmitComment={(taskId: string, commentText: string) => {
+              this.props.createComment(taskId, commentText);
+            }}
+            comments={this.props.comments}
           />
         )}
         <BoardTitleBar>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import { TaskManagementBoardItem } from "./TaskManagementBoardItem";
@@ -53,17 +53,17 @@ const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
   margin-bottom: 1em;
 `;
 
-const AddCardLink = styled.div`
-  margin-top: auto;
-  flex-grow: 0;
-  font: 12px sans-serif;
-  color: grey;
+// const AddCardLink = styled.div`
+//   margin-top: auto;
+//   flex-grow: 0;
+//   font: 12px sans-serif;
+//   color: grey;
 
-  :hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
+//   :hover {
+//     text-decoration: underline;
+//     cursor: pointer;
+//   }
+// `;
 
 // Create and export the BoardColumn component
 export const TaskManagementBoardColumn: React.FC<BoardColumnProps> = (

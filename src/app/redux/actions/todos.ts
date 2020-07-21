@@ -7,6 +7,7 @@ export interface Todo {
   description: string;
   id: string;
   status: string;
+  comment: [];
 }
 
 export interface FetchTodosAction {
@@ -105,6 +106,7 @@ export const fetchTodos = () => {
 export const fetchTodoById = (taskId: string) => {
   return async (dispatch: Dispatch) => {
     PostService.getTaskById(taskId).then((response) => {
+      console.log(response);
       dispatch<FetchTodoByIdAction>({
         type: ActionTypes.fetchTodoById,
         payload: response.data,

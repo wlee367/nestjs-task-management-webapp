@@ -1,4 +1,4 @@
-import { Action, ActionTypes } from "../actions";
+import { Action, ActionTypes, Comment } from "../actions";
 const initialState = {
   selectedTitle: "",
   selectedDescription: "",
@@ -24,10 +24,18 @@ const initialState = {
     },
   },
   columnsOrder: ["OPEN", "IN_PROGRESS", "DONE"],
+  comments: [] as Comment[],
 };
 
 export const todosReducer = (state = initialState, action: Action) => {
   switch (action.type) {
+    case "CREATE_COMMENT":
+      let newComments = [...state.comments];
+      newComments.push(action.payload);
+      return {
+        ...state,
+        comments: newComments,
+      };
     case ActionTypes.toggleModal:
       return {
         ...state,
@@ -67,6 +75,7 @@ export const todosReducer = (state = initialState, action: Action) => {
         selectedDescription: action.payload.description,
         selectedId: action.payload.id,
         selectedStatus: action.payload.status,
+        comments: action.payload.comment,
         isDetailModalOpen: true,
       };
     case ActionTypes.fetchTodos:

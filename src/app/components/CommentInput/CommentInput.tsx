@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 interface CommentInputProps {
   userInitials: string;
-  submitComment: () => void;
+  submitComment: (commentText: string) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
         width: "100%",
       },
     },
+    button: {
+      width: "10%",
+      marginLeft: "0.5em",
+    },
     userCircle: {
       width: "5%",
       height: "50%",
@@ -46,6 +51,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export const CommentInput = (props: CommentInputProps) => {
   const classes = useStyles();
 
+  const [comment, setComment] = useState("");
+
   return (
     <>
       <div className={classes.userCircle}>{props.userInitials}</div>
@@ -54,7 +61,20 @@ export const CommentInput = (props: CommentInputProps) => {
           id="outlined-basic"
           label="Write a comment"
           variant="outlined"
+          value={comment}
+          onChange={(e) => {
+            setComment(e.target.value);
+          }}
         />
+        <Button
+          className={classes.button}
+          color="primary"
+          variant="contained"
+          disabled={comment.length === 0}
+          onClick={() => props.submitComment(comment)}
+        >
+          Save
+        </Button>
       </form>
     </>
   );
